@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+        <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+       <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+       <link rel="shortcut icon" href="imagem/icon.png" type="image/gif"/>
+       <link  rel="stylesheet" href="styles/menustyle.css">
+              
+       <title> Curso de Java Web - Controle de`Pessoas </title>
+       <link  rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"><!-- comment -->
+        <style>
+            .main iframe {
+                border: none;
+                position: absolute;
+                margin-top: 2px;
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+        
+   </head>
+          <!--ESTRUTURA DO MENU-->
+    
+        
+        <div class="topnav" id="myTopNav">
+            <a href="index.html" class="active"> Inicio <i style ="color:white"></i></a>
+            <div class="topnav" id="myTopnav">
+                      
+            <!--ADMINISTRAÇÃO    fa fa-caret-down-down-->  
+            <div class="dropdown">
+                <button class="dropbtn">Pessoas <i class="fa fa-caret-down"> </i> </button>
+                <div class="dropdown-content">
+                           <!-- já lincas as paginas aqui a serem criadas -->
+                    <a href="CadastrarPessoa.jsp" target="janela-prog"> Cadastrar</a>       <!--comando para abri em outra janela mas o iFrame abaixo vai juntar as duas janelas na principal index-->
+                    <a href="ConsultarPessoa.jsp"  target="janela-prog"> Consultar</a>      <!--comando para abri em outra janela, mas o iFrame abaixo vai juntar as duas janelas na principal index-->
+                </div>    
+            </div>    
+        </div>
+        </div>
+                
+        <!-- IFRAME ONDE ABREM AS TELAS DO SISTEM-->
+        
+        <div class="main" >
+            <!-- logomarca no centro da tela-->
+            <iframe name ="janela-prog"  onclick="element.mozRequestFullScreen()" ></iframe>        <!--junta as duas janelas na janela index-->
+           
+        </div>
+   
+    
+</html>

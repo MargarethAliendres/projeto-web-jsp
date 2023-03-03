@@ -1,0 +1,161 @@
+
+
+
+
+// AQUI BAIXEI O JQYERY, NA PASTO DO POJETO ANEXEI AQUI
+PODE ANEXAR A min e  jquery.js.
+
+
+-----> mensagem de alerta
+
+<!DOCTYPE html>
+  <html lang="pt-BR">
+   <head>
+     <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>Exemplo jQuery</title>
+     <script type="text/javascript" src="jquery/jquery-2.1.3.min.js"></script>
+        
+     <script type="text/javascript">     // o objeto nesse caso que foi colocado, doi todo o html, mas colocar a tag que for redenrizar,------
+          $(document).ready(function() {    //esse ready chana a função e indica que so pode rodar o script depois do html carregado
+              alert("Mensagem de alerta fazendo uso da jQuery.");
+               });
+
+        </script>
+    </head>
+   <body>
+    </body>
+  </html>
+
+
+-------->  Funções de estilo CSS com jQuery
+
+No nosso projeto, faremos uso constante de funções de estilo para impor design aos
+ elementos HTML de forma dinâmica e muitas vezes por intermédio de uma linguagem
+ de programação server side. Ações como aplicar formatação, cor, alteração de margen
+s, dentre outras opções, podem ser realizadas via funções de estilo. Para isso, podemos
+ usar algumas funções do jQuery como css(), addClass(), add(), removeClass() e 
+toggleClass(). A seguir na Listagem 7 é demonstrado como utilizar algumas destas 
+funções.
+
+       </script>
+        <style>
+        .estilo1{                              /*escreve o estilo assim classe bootstrap, utiliza lá embaixo*/
+            background-color: lightgreen;
+            border: 1px solid;
+        }
+      </style>
+        <script>
+          $(document).ready(function() {
+              $("#btn_alterar").click(function(){
+              $("#paragrafo_1").css("color","blue")          /* aqui defini a cor da letra e linha*/
+              .addClass("estilo1");                           /*aqui adicionando a classe com a cor do fundo e a borda*/
+              })});
+        </script>
+    </head>
+    <body>
+        <p id="paragrafo_1">Estilos CSS com jQuery.</p>
+        <button id="btn_alterar">Altera cor de fundo.</button>
+     
+    </body>
+
+
+
+--------> Ocultando e exibindo elementos HTML com jQuery
+
+
+O ocultamento de elementos HTML em páginas web é algo muito útil quando 
+desejamos carregar todo o conteúdo de uma requisição, mas não exibir tudo de 
+uma vez. Isso serve, inclusive, para diminuir o tráfego de dados na rede e aumentar 
+a performance da aplicação para fins de usabilidade, SEO, etc.
+
+Existem duas funções bastante úteis no jQuery para controlar a visibilidade de
+ elementos na janela do browser: hide() para ocultar um elemento e show0 para tornar 
+o mesmo visível. Então, é possível controlar a visibilidade dinamicamente no lado do 
+cliente sem ser preciso enviar uma requisição ao servidor e ter que renderizar 
+novamente a página, poupando tempo e consumo de banda.
+<!DOCTYPE html>
+  <html lang="pt-BR">
+   <head>
+     <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>Exemplo jQuery</title>
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+     
+
+     
+      <script>
+        $(document).ready(function() {
+             $("#btn_ocultar").click(function(){
+               $("#mensagem").hide();
+               $("#btn_ocultar").hide();
+               $("#btn_exibir").show();
+             });
+            $("#btn_exibir").click(function(){               
+                $("#mensagem").show();
+                $("#btn_ocultar").show();               
+                $("#btn_exibir").hide();
+             });
+         });        
+              </script>  
+   </head>
+    
+       <p id="mensagem">Cadastro realizado com sucesso.</p>
+        <button id="btn_ocultar">Ocultar mensagem</button>
+        <button id="btn_exibir">Exibir mensagem</button>
+     
+    </body>
+  </html>
+
+
+--------> HTML dinâmico com jQuery e Bootstrap
+
+
+O jQuery possibilita gerar elementos HTML dinamicamente e inseri-los em uma página
+. Para exemplificar, vejamos como realizar este processo fazendo uso também do
+ Bootstrap para criar um pequeno cadastro de clientes que será apresentado apenas
+ quando o usuário clicar no botão cadastrar. 
+
+<!DOCTYPE html>
+  <html lang="pt-BR">
+   <head>
+     <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>Exemplo jQuery</title>
+      <script src="js/jQuery-1.11.2/jQuery.min.js"></script>
+     <link rel="stylesheet" href="bootstrap3.3.7/css/bootstrap.min.css" >
+     <link rel="stylesheet" href="bootstrap3.3.7/css/bootstrap-theme.min.css" >
+     
+  
+     <script>
+          $(document).ready(function() {
+              $("#btn_formulaio").click(function(){
+                  
+                                      //acrescenta  o formulario dinamicamente  com html e com uso do bootstrap //
+                  $("form").append("<div class='container'>" + "<div class='jumbotron'>" +
+                              "<div id='div_nome' class='form-group'></div>" + "</div>" + "</div>");
+
+                  $("#div_nome").append("<label>::CADASTRO DE CLIENTE::</label></br></br>");
+                  $("#div_nome").append("<label>Nome</label>");
+                  var inputNome = $("<input />", {id:"inputNome", class:"form-control"});
+                  $("#div_nome").append(inputNome);
+
+                  $("#div_nome").append("<label>CPF</label>");
+ 
+                                              //paramentro                      //esse final é bootstrap
+                  var inputCPF = $("<input />", {id:"inputCPF", class:"form-control"});
+                  $("#div_nome").append(inputCPF);
+
+                  $("#div_nome").append("</br></br><button type='submit' class='btn btn-default'>Cadastrar</button>");
+              })});
+        </script>
+        
+        </head>
+    <body>
+       <button id="btn_formulaio" class="btn btn-default">Cadastro cliente</button></br></br>
+        <form>
+            <!-- o formulario vai gerado aqui dinamicamente -->
+        </form>
+       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    </body> 
+  </html>

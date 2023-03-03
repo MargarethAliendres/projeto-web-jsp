@@ -1,0 +1,650 @@
+
+BAIXAR E INSTALAR O APACHE TOMCAT NA MAQUINA
+
+BAIXAR O DRIVER JDBC SÓ BAIXAR (DO BANCO QUE VAI USAR) - COLOCAR NA INTERNET EX DRIVER JDBC POSTGREESQL
+
+ABRIR O NETBEANS
+
+CRIAR O PROJETO - JAVA WITH ANT - JAVA WEB -  WEB APLICATION
+NEXT- NOME DO PROJETO E PASTA DO LOCAL DO PROJETO - NEXT - ESCOLHER A PASTA DO TOMCAT- NEXT- AGORA NO 
+CASO DE FICAR NO JSP NAO ESCOLHA NENHUM FRAMEWORK - FINISH.
+
+QUANDO ESTIVER DENTRO DO NETBEAS, COLOCAR O JDBC NA BIBLIOTECA, lado 
+esquerdo libraries - clicar com lado direito mouse- addJAR/Folders-selecione a pasta do JDBC.
+
+
+
+
+ACIMA NO WEB-PAGES: 
+
+      CRIAR AS PAGINAS JSP
+     O HTML EXISTENTE É O PRINCIPAL, ONDE FAZ LINKS PARA AS PAGINAS CRIADAS
+
+
+CRIAR OS PACOTES NA SOURCE PACKAGES 
+
+   DE:
+     
+    PACOTE  classes
+          .CRIAR AS CLASSES COM SEUS ATRIBUTOS
+
+      EX:Pessoa
+     
+    PACOTE  persistencia
+          .CRIAR A CLASSE DE PersistenciaDao
+        
+     PACOTE UTILS - CONEXAO
+          .CRIAR A CLASSE DA CONEXAO
+         	EX: Dao
+ 
+
+ABAIXO UM PROJETO COMPLETO -  NA ORDEM DE EXECUÇÃO
+
+
+package classe;
+
+public class Pessoa {
+	
+	private int idpessoa;
+	private String nomepessoa;
+	private String email;
+	
+	
+	public Pessoa() {
+		
+		
+	}
+	         /*esse construtor que vamos fazer operacao*/
+	public Pessoa(String nomepessoa, String email) {      
+		super();       /*usa quando tem heranca, vai ter heranca no classe pessoaDao*/
+		this.nomepessoa = nomepessoa;
+		this.email = email;
+	}
+		
+	                              /**esse construtor que vamos fazer inclusao**/
+	public Pessoa(int idpessoa, String nomepessoa, String email) {
+		super();         /*usa quando tem heranca, vai ter heranca no classe pessoaDao*/     
+        this.idpessoa = idpessoa;
+		this.nomepessoa = nomepessoa;
+		this.email = email;
+								
+	}
+	
+	public int getIdpessoa() {
+	return idpessoa;
+	}
+	public void setIdpessoa(int idpessoa) {
+	this.idpessoa = idpessoa;
+	}
+	public String getNomepessoa() {
+		return nomepessoa;
+	}
+	public void setNomepessoa(String nomepessoa) {
+		this.nomepessoa = nomepessoa;
+	}
+	public String getEmail() {
+		return email;
+	}
+	public void setEmail(String email) {
+		this.email = email;
+	}
+	
+
+
+
+package utils;
+
+	import java.sql.CallableStatement;
+	import java.sql.Connection;
+	import java.sql.DriverManager;
+	import java.sql.PreparedStatement;
+	import java.sql.ResultSet;
+	import java.sql.SQLException;
+
+	public class Dao {
+		
+		protected Connection con;  // Conexao ao Banco de Dados
+		protected PreparedStatement stmt; // Acessa a Tabela ( insert, update, delete , select)
+		protected ResultSet rs; // Consulta a Tabela( select )
+		protected CallableStatement call; // Procedures e Function
+		              // o open abre a conexaao//
+		public void open() throws Exception {                 // esse nome cadastro é o banco que criamos//
+		    String url = "jdbc:postgresql://localhost:5432/cadastro";
+		    String user = "postgres";
+		    String password = "Mar202598*";    //senha que criei na instalacao do postgree//
+		    try {
+		        Class.forName("org.postgresql.Driver");
+		        con = DriverManager.getConnection(url, user, password);      
+		    } catch (SQLException | ClassNotFoundException ex) {
+		        System.out.println("Erro ao conectar com o banco");
+		        throw new Exception(ex);
+		    }
+		}
+		              //o close fecha a conexao//
+		public void close() throws Exception{		
+			con.close();
+			
+		}
+	}
+
+
+package persistencia;
+
+import utils.Dao;
+import classes.Pessoa;
+	import java.sql.SQLException;
+	import java.util.ArrayList;
+	import java.util.List;
+
+	public class PessoaDao extends Dao {
+
+            public boolean incluirPessoa(Pessoa p) throws Exception {
+                open();
+                stmt = con.prepareStatement("insert into pessoa(nomepessoa, email) values(?,?)");
+                try {
+                    stmt.setString(1, p.getNomepessoa());
+                    stmt.setString(2, p.getEmail());
+                    stmt.execute();
+                    return true;
+                } catch (SQLException ex) {
+                    System.out.println("Erro: " + ex.getMessage() + stmt);
+                    stmt.close();
+                    close();
+
+                    return false;
+                } finally {
+                    stmt.close();
+                    close();
+                }
+	  }  
+
+		
+		public boolean alterarPessoa(Pessoa p) throws Exception {
+			open();
+			stmt = con.prepareStatement("update Pessoa set idpessoa= ?, nomepessoa= ? email= ?");
+			
+			try {
+			
+			stmt.setInt(1, p.getIdpessoa());
+			stmt.setString(2, p.getNomepessoa());
+			stmt.setString(3, p.getEmail());
+			stmt.execute();
+		
+		} 
+		catch (SQLException ex) {   //
+			
+		System.out.println("Erro: " + ex.getMessage() + stmt);
+			stmt.close();
+			close();
+			return false;
+			
+		}finally {
+			  System.out.println("Fechando a conex�o com banco de dados no Finally");
+			stmt.close();
+			close();
+			return true;
+		}
+               }
+
+		public void excluirPessoa(Pessoa p) throws Exception {
+
+			open();
+			stmt = con.prepareStatement("delete from Pessoa where idpessoa = ?");
+			stmt.setInt(1, p.getIdpessoa());
+			stmt.execute();
+			stmt.close();
+			close();
+
+		}
+		
+                // retornando um objeto
+		public Pessoa consultarPessoa(int id) throws Exception {
+				open();                                                         
+				stmt = con.prepareStatement("select * from pessoa where idPessoa = ? "); //esse exclamaçao é isso aqui  setInt(1, cod);//
+				stmt.setInt(1, id);  //esse cod vai ser setado, é o codigo do metodo//
+				try {          
+					rs = stmt.executeQuery();			
+				}
+				catch (SQLException ex) {
+					System.out.println("Falha ao recuperar o registro Contate TI");
+					ex.printStackTrace();
+					throw new Exception(ex);
+				}
+				finally {
+					System.out.println("Fechando a conex�o com banco de dados no Finally");
+					close();
+				}
+				Pessoa p = null;
+				if (rs != null) {
+					if (rs.next()) {
+						p = new Pessoa();
+						p.setIdpessoa(rs.getInt("idPessoa"));
+						p.setNomepessoa(rs.getString("nomePessoa"));
+						p.setEmail(rs.getString("email"));				
+					}
+				}
+				close();
+				return p;
+		}
+                
+                
+		   //retorna uma lista com varias pessoas/elementos
+		public List<Pessoa> consultarPessoas() throws Exception {
+			try {
+				open();
+				stmt = con.prepareStatement("select * from pessoa");
+				rs = stmt.executeQuery();
+		        List<Pessoa> listaPessoas = new ArrayList<>();
+				while (rs.next()) {
+					Pessoa pessoa = new Pessoa();
+					pessoa.setIdpessoa(rs.getInt("idpessoa"));
+					pessoa.setNomepessoa(rs.getString("nomepessoa"));
+					pessoa.setEmail(rs.getString("email"));
+					listaPessoas.add(pessoa);
+				}
+				close();
+				return listaPessoas;
+				
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				return null;
+                                
+			}finally {
+			  System.out.println("Fechando a conex�o com banco de dados no Finally");
+			  close();
+                          
+                        }   
+		}
+	}
+
+
+
+
+html principal que conecta as paginas criadas:
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="jQuery-1.11.2/"> </script>
+        <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/fontawesome.min.js"></script>
+       <link  rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/fontawesome.min.css">
+       <link  rel="stylesheet" href="bootstrap3.3.7/css/bootstrap.min.css">
+       <link rel="stylesheet" href="bootstrap3.3.7/css/bootstrap-theme.min.css">
+        
+        <link rel="shortcut icon" href="resourses/tick.png" type="image/gif"/>
+        <title> Curso de Java Web - Controle de`Pessoas </title>
+        <style>
+            .main iframe {
+                border: none;
+                position: absolute;
+                margin-top: 2px;
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+        
+   </head>
+          <!--ESTRUTURA DO MENU-->
+    <body>
+        <div class="container-fluid">
+        <div class="topnav" id="myTopNav">
+            <a href="index.html" class="active"> Inicio <i style ="color:white"></i></a>
+            <div class="topnav" id="myTopnav">
+                      
+            <!--ADMINISTRAÇÃO    fa fa-caret-down-down-->  
+            <div class="dropdown">
+                <button class="dropbtn">Pessoas <i class="fa fa-caret-down"> </i> </button>
+                <div class="dropdown-content">
+                           <!-- já lincas as paginas aqui a serem criadas -->
+                    <a href="CadastrarPessoa.jsp" target="janela-prog"> Cadastrar</a>       <!--comando para abri em outra janela mas o iFrame abaixo vai juntar as duas janelas na principal index-->
+                    <a href="ConsultarPessoa.jsp"  target="janela-prog"> Consultar</a>      <!--comando para abri em outra janela, mas o iFrame abaixo vai juntar as duas janelas na principal index-->
+                </div>    
+            </div>    
+        </div>
+        </div>
+        </div>
+        
+        <!-- IFRAME ONDE ABREM AS TELAS DO SISTEM-->
+        
+        <div class="main" >
+            <!-- logomarca no centro da tela-->
+            <iframe name ="janela-prog" element.mozrequestfullscreen() ></iframe>        <!--junta as duas janelas na janela index-->
+           
+        </div>
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"> </script>
+        <script src="bootstrap3.3.7/js/"> </script>
+        
+    </body>
+</html>
+
+
+
+criar um arquivo jsp/pagina - ReceberDadosPessoa
+
+<%@page import = "classes.Pessoa" %>
+<%@page import = "persistencia.PessoaDao" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
+<%
+    //receber os valores da tela HTML/
+    //aqui que captura os dados cadastrados/informados na tela.
+    
+String vnomepessoa = request.getParameter("nomepessoa");
+String vemail = request.getParameter("email");
+
+          Pessoa pessoa = new Pessoa();
+          
+          PessoaDao pesDAO = new PessoaDao();
+          
+          pessoa.setNomepessoa(vnomepessoa);
+          pessoa.setEmail(vemail);
+          
+            if (pesDAO.incluirPessoa(pessoa)){             // quando ele terminar a inclusao ele volra para o cadastar pessoa
+             response.sendRedirect("CadastrarPessoa.jsp?msgSucesso=Pessoa cadastrada com sucesso!");
+            } else {
+             response.sendRedirect("CadastrarPessoa.jsp?msgFalha=Falha ao tentar Incluir a 'Pessoa'!");
+        
+    }
+  
+      
+   
+%>
+
+
+criar um arquivo jsp/pagina - CadastrarPessoa
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import = "java.util.List"%>
+<%@page import = "classe.Pessoa"%>
+<%@page import = "daopersistencia.PessoaDao"%>
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+        <script src="jQuery-1.11.2/"> </script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"> </script>
+        <script src="bootstrap3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/fontawesome.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/fontawesome.min.css">
+        <link rel="stylesheet" href="bootstrap3.3.7/css/bootstrap.min.css">
+        
+    </head>
+    <body>
+        <div class="container">
+            <form id="pessoa" action="ReceberDadosPessoa.jsp" method="POST">     <!-- recebe a entrada de dados no formulario-->
+                <h3 class="text-center"> Cadastro de Pessoas</h3> 
+                <p></p>
+                <label id="msg" class="cabecalho">
+                  <% 
+                      String msgSucesso = request.getParameter("msgSucesso"); //escreve a mensagem configurado no receber dadoa no cadastro
+                      String msgFalha = request.getParameter("msgFalha"); //escreve a mensagem configurado no receber dadoa no cadastro
+                   %>
+                    <span style="color: blue"><%=(msgSucesso != null? msgSucesso: "")%> <br /></span>
+                    <span style="color: red"><%=(msgFalha != null? msgFalha: "")%> <br /></span>
+                </label>
+                    <!-- NOME-->
+                    <fieldset>
+                       <label> Nome </label>
+                         <div class="nomepessoa">
+                       <input type="text" id=nomepessoa name="nomepessoa" placehoder="informe o nome" required maxlength="40">
+                       </div>
+                    </fieldset>
+                    
+                    <fieldset >
+                          <label> Email </label>
+                        <div class="email">
+                            <input type="email" id=email name="email" placehoder="informe o email" required maxlength="50">
+                        </div>
+                    </fieldset> <br>
+                    
+                    <div>            <!-- tamanho da mesclagem do botao-->
+                        <div class="form-group col-md-3 h-10">                    
+                            <input type="submit" value="Cadastrar" class="btn btn-primary" onclick="EnviarForm()" />  <!--botao de eviar cadastro-->
+                        </div> 
+                                      <!--tamanho da mesclagem do botao-->
+                        <div class="form-group col-md-3 h-10">              
+                            <input type="reset" value="Cancelar" class="btn btn-danger" />    <!-- botao de cadastrar-->
+                        </div> 
+                    </div>
+            </form>    
+        </div>  
+        
+    </body>
+</html>
+
+
+
+criar um arquivo jsp/pagina - ConsultarPessoa
+
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import = "java.util.List"%>
+<%@page import = "classes.Pessoa"%>
+<%@page import = "persistencia.PessoaDao"%>
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+        <script src="jQuery-1.11.2/"> </script>
+        <script src="https://kit.fontawesome.com/f49d415fdb.js" crossorigin="anonymous"></script>
+        <script src="bootstrap3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/fontawesome.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/fontawesome.min.css">
+        <link rel="stylesheet" href="bootstrap3.3.7/css/bootstrap.min.css">
+      </head>  
+  
+    <body>
+         <!--diferente do cadastrar, aqui tenho que instanciar a classe pessoaDao-->
+        <%
+           
+            PessoaDao pes = new PessoaDao();
+            List<Pessoa> listapessoas = pes.consultarPessoas();   //pego a lista de pessoas 
+                       
+        %>    
+       
+                <h4 class="text-center"> Consulta pessoas</h4> 
+               
+                <!--label para lançcar mensagens de feedback de atualiazação -->
+                <label id="msg" class="cabecalho">
+                  <% 
+                    if(request.getParameter("pmensagem") !=null) {     //escreve a mensagem configurado no receber dadoa no cadastro
+                        out.write(request.getParameter("pmensagem"));
+                    } %>
+                </label>
+                     <table id="consulta" class="table">
+                       <thead class="thead-dark">         <!-- cabeçalho da tabela-->
+                            <th>Nome</th>
+                            <th>email</th>
+                            <th>Editar</th>
+                            <th>Excluir</th>
+                       </thead>
+                       <tbody>           
+                               <!--for echc    aqui  fazendo um for each-->  <!-- muito importante essa abertura de chave -->     
+                         <% for(Pessoa pessoa : listapessoas) {%>     <!--conteudo que vai esta dentro da tabela abaixo-->
+                         <tr>  <!-- linha-->
+                             <td><% out.write(pessoa.getNomepessoa()); %></td>    <!-- coluna-->
+                             <td><% out.write(pessoa.getEmail()); %></td>
+                             
+                             
+                               <!-- botao editar-->
+                             <td> <% out.write("<a href=EditarPessoa.jsp?idpessoa=" + "" + pessoa.getIdpessoa() + ">" + "<i class='fa-solid fa-file-pen' style='color:green'></i>" + "</a>");%></td> 
+                             
+                             
+                             <td>     <!--botao excluir-->
+                                 <button type="button" id="botaoexcluir" onclick="mostrarExclusao(<% out.write("" + pessoa.getIdpessoa());%>)"> <i class="fa-solid fa-trash" style="color:red"></i></button> 
+                             </td>             
+                         </tr>
+                        <%}%>        <!-- muito importante esse fechamento de chaves do java-->         
+                        </tbody>       
+                       </table>
+                     <!-- popup de confirmacao e exclusao-->
+                    <div class='msg-popup'>
+                        <h5 class="text-center" style="color: #ffffff; font-family: arial-bold"> EXCLUSAO </h5>
+                        <h5 class="text-center" style="color: #ffffff;"> Confirma a <b>exclusão</b> do registro? </h5>
+                        
+                        <div class='text-center'>
+                        <a href=""> <button class="btn btn-dark" clik="cancela()"> Nâo </button></a>  <!--funcao cancela-->
+                        <a id="exclui" href="#"> <button class="btn btn-danger" id="excluir"> Sim </button></a>
+                            
+                        </div> 
+                    </div>
+                 
+                    <script>
+                        function cancela(){
+                         document.getElementClassName('msg-popup')[0].style.display='none';
+                        }
+                      function mostrarExclusao(pessoa) {
+                         document.getElementClassName('msg-popup')[0].style.display='block';
+                            var link = document.getElementById('exclui');
+                            link.href = "ReceberExcluirPessoa.jsp?idpessoa=" + pessoa;
+                        }
+                     </script>    
+                  
+         </body>       
+    </html>
+
+
+
+
+criar um arquivo jsp/pagina - ReceberEditarPessoa
+
+
+<%@page import = "classe.Pessoa" %>
+<%@page import = "daopersistencia.PessoaDao" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
+<%
+    //receber os valores da tela HTML//int
+    //aqui que captura os dados cadastrados/informados na tela.
+ 
+int vidpessoa = Integer.parseInt(request.getParameter("idpessoa"));
+String vnomepessoa = request.getParameter("nomepessoa");
+String vemail= request.getParameter("email");    
+
+
+          Pessoa pessoa = new Pessoa();
+          
+          PessoaDao pesDAO = new PessoaDao();
+          pessoa.setIdpessoa(vidpessoa);
+          pessoa.setNomepessoa(vnomepessoa);
+          pessoa.setEmail(vemail);
+          
+          
+            if (pesDAO.alterarPessoa(pessoa)){        // quando terminar ele redireciona para consultar pessoa
+             response.sendRedirect( "ConsultarPessoa.jsp?pmensagem=Pessoa alterada com sucesso com sucesso");
+            } else {
+             response.sendRedirect( "ConsultarPessoa.jsp?pmensagem=Problemas ao salvar Pessoa");
+        
+                  }
+  
+%>
+
+
+
+
+
+criar um arquivo jsp/pagina -EditarPessoa
+
+
+<%@page import = "java.util.List"%>
+<%@page import = "classe.Pessoa"%>
+<%@page import = "daopersistencia.PessoaDao"%>
+
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+    <head>
+         <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+        <script src="jQuery-1.11.2/"> </script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"> </script>
+        <script src="bootstrap3.3.7/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/js/fontawesome.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/fontawesome.min.css">
+        <link rel="stylesheet" href="bootstrap3.3.7/css/bootstrap.min.css">
+        
+    </head>
+    
+    <body>
+        <%
+           int idpessoa = Integer.parseInt(request.getParameter("idpessoa"));
+           Pessoa pess = new PessoaDao().consultarPessoa(idpessoa);
+                   
+            
+        %>
+        <div>
+            <div class="container" >
+                <form id="pessoa" action="ReceberEditarPessoa.jsp" method="POST">
+                    
+                    <h3> Alterar Pessoa</h3>
+                    <p></p>
+                    
+                    <fieldset>
+                        <div class ="idcolaborador">
+                            <label> Pessoa </label>
+                            <input type="text" name="idpessoa"  readonly="true"  value="<%out.write("" + pess.getIdpessoa());%>"/>
+                       </div>
+                    </fieldset>
+                    
+                    
+                    <fieldset>
+                        <div class ="nomepessoa">
+                            <label> Nome </label>
+                            <input type="text" name="nomepessoa" required maxlength =" 40" value="<%out.write(String.valueOf(pess.getNomepessoa()));%>" style="text-center"/> 
+                       </div>
+                    </fieldset>
+                    
+                    <fieldset>
+                        <div class="email">
+                            <label>email <label>
+                            <input type="email"  name="email"  required maxlength =" 50" value="<%out.write(String.valueOf(pess.getEmail()));%>" />
+                        </div>
+                    </fieldset> 
+                        <div class="row" >
+                            <div class="form-group col-md-3 h-10 " >
+                                <input type="submit" value="Alterar" class="btn btn-primary">  <!-- botao alterar-->
+                            </div 
+                            <div class ="form-group col-md-3 h-10 " >
+                                <input type="reset" value="Cancelar" class="btn btn-danger">   <!-- botao cancelar-->
+                            <div>
+                      </div>
+                    </div>
+                </form>   
+           </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"> </script>
+        <script src="bootstrap3.3.7/js/bootstrap.min.js"></script>
+    </body>
+</html>
+
+
+
+
+criar um arquivo jsp/pagina -ReceberExcluirPessoa
+
+
+<%@page import = "classe.Pessoa"%>
+<%@page import = "daopersistencia.PessoaDao"%>
+<%
+    int idpessoa = Integer.parseInt(request.getParameter("idpessoa"));
+    
+    Pessoa pess =  new Pessoa();
+    
+    PessoaDao pess2 = new PessoaDao();
+    
+    pess.setIdpessoa(idpessoa);
+    
+             if(pess2.excluirPessoa(pess)){
+                  response.sendRedirect("ConsultarPessoa.jsp?pmensagem=Pessoa excluida com sucesso");
+           } else {
+                 response.sendRedirect("ConsultarPessoa.jsp?pmensagem=Problemas excluir Pessoa");
+    }
+  
+   
+%>
+

@@ -1,0 +1,101 @@
+
+
+
+
+
+
+
+
+  //BAIXEI O BOOTSTRAP E COLOQUEI NA PASTA DO PROJETO, APÓS LINKEI
+NO HTML
+
+// ABAIXA UMAS REGRAS DE USO DO BOOTSTRAP
+
+  
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Website com Bootstrap</title>
+        <link rel="stylesheet" href="bootstrap3.3.7/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="bootstrap3.3.7/css/bootstrap-theme.min.css"/>
+        <link rel="stylesheet" href="style.css" type="text/css"/>
+       <style> .estilo2 { background-color:lightgreen; border:1px solid;} </style>
+
+
+
+ <!-- usar o container para usar classes bootstrap, ocontainer já vem configurado marges e o Media query, e se quiser pode 
+        usar tambem o container-fluid-->
+    
+</head>
+    <body>
+        <div>TODO write content</div>
+        
+                 <div class="container">
+                 <div class="jumbotron">
+                         <h3>h3 dentro class Jumbotron, e Jumbotron dentro de Container.</h3>
+                  </div>
+                  </div>
+             <div class="container-fluid">
+                  <div class="jumbotron">
+                         <h3>h3 dentro class Jumbotron, e Jumbotron dentro de Container-fluid.</h3>
+                  </div>
+              </div>
+        
+
+  <!-- grids bootstrap  linha imaginaria que é divida em 12colunas, faz a estrutura layout  -  row é linha-->
+              
+              <div class="container">
+            <div class="row">                              <!-- br largura da linha-->
+                <div class="col-md-1 col-sm-6 estilo2">LOGO <br><br></div>
+                <div class="col-md-1 col-sm-6 estilo2">MENU <br><br></div>
+                <div class="col-md-1 col-sm-6 estilo2">MENU <br><br></div>
+                <div class="col-md-1 col-sm-6 estilo2">MENU <br><br></div>
+                <div class="col-md-1 col-sm-6 estilo2">MENU <br><br></div><!-- comment -->
+                <div class="col-md-1 col-sm-6 estilo2">MENU <br><br></div>
+                <div class="col-md-1 col-sm-6 estilo2">MENU <br><br></div>
+                <div class="col-md-1 col-sm-6 estilo2">MENU <br><br></div>
+                <div class="col-md-1 col-sm-6 estilo2">MENU <br><br></div>
+                <div class="col-md-1 col-sm-6 estilo2">MENU <br><br></div><!-- comment -->
+                <div class="col-md-1 col-sm-6 estilo2">MENU <br><br></div><!-- comment -->
+                <div class="col-md-1 col-sm-6 estilo2">MENU <br><br></div>
+                
+             </div>
+            <div class="row">
+                <div class="col-md-6 col-sm-4 estilo2">SLIDESHOW <br><br><br></div>
+                <div class="col-md-6 col-sm-8 estilo2">BANNER <br><br><br></div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-sm-4 estilo2">ESQUEDA <br><br><br><br><br></div>
+                <div class="col-md-6 col-sm-6 estilo2">CENTRAL <br><br><br><br><br></div>
+                <div class="col-md-3 col-sm-2 estilo2">DIREITA <br><br><br><br><br></div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 estilo2">RODAPE</div>
+            </div>
+        </div>
+              
+            
+<!-- tipografia do bootstrap, o bootstrap, por padrao já zera o css colocado pelo browser no html,  -->
+            
+            
+              <div class="container">
+            <h1>Título com h1 <small>Texto secundário.</small></h1>
+            <h2>Título com h2 <small>Texto secundário.</small></h2>
+            <h3>Título com h3 <small>Texto secundário.</small></h3>
+            <h4>Título com h4 <small>Texto secundário.</small></h4>
+            <h5>Título com h5 <small>Texto secundário.</small></h5>
+            <h6>Título com h6 <small>Texto secundário.</small></h6>
+            <p class="lead">Aqui temos um parágrafo com texto destacado com uso da classe <mark>"lead e elemento mark"</mark>.</p>
+            <p> Excluindo parte de um texto: <del>Este texto foi excluído usando o elemento "del".</del></p>
+            <p> Incluindo texto: <ins>Este texto foi incluído com uso do "ins".</ins></p>
+            <p class="text-left">Texto alinhado a esquerda com uso da classe "text-left".</p>
+            <p class="text-center">Texto alinhado ao centro com uso da classe "text-center"</p>
+            <p class="text-right">Texto alinhado a direita com uso da classe "text-right"</p>
+            <p class="text-justify">Texto justificado com uso da classe text-justify.</p>
+            <p class="text-nowrap">Usando a classe text-nowrap</p>
+            <p class="text-lowercase">Texto em caixa baixa com uso da classe text-lowercase.</p>
+            <p class="text-uppercase">Texto em caixa alta com uso da classe text-uppercase.</p>
+            <p class="text-capitalize">Texto com primeiras letras em maiúsculo com classe text-capitalize.</p>
+       </div>
+
